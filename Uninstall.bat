@@ -1,0 +1,1 @@
+%SystemRoot%\System32\reg.exe delete HKEY_CLASSES_ROOT\VisualStudio.cs.11.0\shell\Oraclify

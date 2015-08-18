@@ -1,0 +1,13 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CLASSES_ROOT\.cs]
+@="CS-File"
+
+[HKEY_CLASSES_ROOT\CS-File]
+@="CS File Test"
+
+[HKEY_CLASSES_ROOT\CS-File\shell\annotate]
+@="Annotate For Entity Framework"
+
+[HKEY_CLASSES_ROOT\CS-File\shell\annotate\command]
+@="\"c:\\program files\\dummy\\process.bat\" \"%1\""
