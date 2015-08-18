@@ -13,6 +13,27 @@ param(
 [Parameter(Mandatory=$true)][string]$FileName
 )
 (Get-Content $FileName) | ForEach-Object { 
-                                            $_ -replace '^(\s*)public\s(\S*)\s(\S*)\s\{ get; set; \}', "`$1[Column(`"`$3`")]`r`n`$1public `$2 `$3 { get; set; }" `
-                                            -replace '^(\s*)public partial class (\S*)', "`$1[Table(`"`$2`")]`r`n`$1public partial class `$2"
+                                            $line = $_
+                                            $propertyPattern = '^(\s*)public\s(\S*)\s(\S*)\s\{ get; set; \}'
+                                            $classPattern = '^(\s*)public partial class (\S*)'
+                                            $classReplacePattern = "`$1[Table(`"`$2`")]`r`n`$1public partial class `$2"
+
+                                            if($line -match $propertyPattern){
+                                                [Regex]::Replace($line, $propertyPattern, {
+                                                    param($m)
+                                                    $m.Groups[1].Value + '[Column("' + $m.Groups[3].Value.ToUpper() + "`")]`r`n" + 
+                                                    $m.Groups[1].Value + "public " + $m.Groups[2] + " " + $m.Groups[3].Value + " { get; set; }"
+                                                })
+                                                
+                                            }
+                                            elseif($line -match $classPattern){
+                                                [Regex]::Replace($line, $classPattern, {
+                                                    param($m)
+                                                    $m.Groups[1].Value + '[Table("' + $m.Groups[2].Value.ToUpper() + "`")]`r`n" + 
+                                                    $m.Groups[1].Value + "public partial class " + $m.Groups[2]
+                                                })
+                                            } 
+                                            else {
+                                                echo $line
+                                            }
                                          } | Set-Content $FileName
